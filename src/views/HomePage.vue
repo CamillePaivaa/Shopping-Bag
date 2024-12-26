@@ -3,6 +3,7 @@
     <div class="products">
       <div
         class="product"
+        :class="{ inBag: isInBag(product) }"
         v-for="(product, index) in this.products"
         :key="index"
       >
@@ -12,7 +13,12 @@
         ></div>
         <h4>{{ product.title }}</h4>
         <p class="price">US${{ product.price.toFixed(2) }}</p>
-        <button>Add to bag</button>
+        <button v-if="!isInBag(product)" @click="addProductInBag(product)">
+          Add to bag
+        </button>
+        <button v-else @click="removeProductFromBag(product)" class="remove">
+          Remove from bag
+        </button>
       </div>
     </div>
   </div>
@@ -20,22 +26,28 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 export default {
   name: "HomePage",
   data() {
     return {};
   },
+  created() {
+    this.$store.dispatch("loadProducts"); // Carrega os produtos ao criar o componente
+  },
+  computed: mapState(["products", "productInBag"]),
 
-  computed: {
-    products() {
-      return this.$store.state.products; // Obtém os produtos do Vuex
+  methods: {
+    addProductInBag(product) {
+      this.$store.dispatch("addProductToBag", product); // Adiciona o produto na sacola
+    },
+    isInBag(product) {
+      return this.productInBag.find((item) => item.id == product.id);
+    },
+    removeProductFromBag(product) {
+      this.$store.dispatch("removeProductFromBag", product.id); // Remove o produto da sacola
     },
   },
-  created() {
-    this.$store.dispatch("loadProducts"); // Chama a ação para carregar os produtos ao criar o componente
-  },
-
-  methods: {},
 };
 </script>
 
