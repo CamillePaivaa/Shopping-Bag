@@ -22,9 +22,19 @@ export default createStore({
   },
   actions: {
     loadProducts({ commit }) {
-      axios.get("https://fakestoreapi.com/products").then((response) => {
-        commit("loadProducts", response.data);
-      });
+      axios
+        .get("https://fakestoreapi.in/api/products")
+        .then((response) => {
+          console.log(response.data); // Para verificar a estrutura da resposta
+          if (response.data && response.data.products) {
+            commit("loadProducts", response.data.products); // Ajuste para usar 'products'
+          } else {
+            console.error("Produtos não encontrados.");
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar os produtos:", error);
+        });
     },
     addProductToBag({ commit }, product) {
       product.quantity = 1;

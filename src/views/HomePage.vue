@@ -7,12 +7,20 @@
         v-for="(product, index) in this.products"
         :key="index"
       >
-        <div
-          class="product-image"
-          :style="{ backgroundImage: 'url(' + product.image + ')' }"
-        ></div>
+        <div class="product-image">
+          <img :src="product.image" />
+        </div>
+
         <h4>{{ product.title }}</h4>
-        <p class="price">US${{ product.price.toFixed(2) }}</p>
+
+        <p class="price">
+          US${{
+            product.price && !isNaN(product.price)
+              ? product.price.toFixed(2)
+              : "0.00"
+          }}
+        </p>
+
         <button v-if="!isInBag(product)" @click="addProductInBag(product)">
           Add to bag
         </button>
@@ -64,10 +72,13 @@ export default {
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
       padding: 16px;
       margin: 8px;
-      height: 360px;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
 
       @media only screen and (max-width: 769px) {
         flex: 0 0 40%;
+        height: auto;
       }
 
       @media only screen and (max-width: 640px) {
@@ -79,23 +90,26 @@ export default {
       }
 
       .product-image {
-        margin: 20px auto;
-        width: 160px;
-        height: 140px;
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
+        margin: 10px auto;
+        img {
+          max-width: 160px;
+          max-height: 130px;
+        }
       }
+
       h4 {
-        margin: 22px auto;
-        font-size: 12px;
-        max-width: 60%;
+        margin: 16px auto;
+        font-size: 14px;
+        max-width: 90%;
         font-weight: normal;
+        text-align: center;
       }
 
       p.price {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: bold;
+        margin-bottom: 12px;
+        text-align: center;
       }
 
       button {
@@ -107,6 +121,7 @@ export default {
         text-align: center;
         padding: 8px 16px;
         cursor: pointer;
+        margin-top: auto;
 
         &:hover {
           opacity: 0.8;
